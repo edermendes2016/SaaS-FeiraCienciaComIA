@@ -1,0 +1,80 @@
+<div class="dashboard-container">
+  <app-dashboard-header 
+    (newProject)="goToGenerator()"
+    (home)="onHome()">
+  </app-dashboard-header>
+
+  <main class="dashboard-content">
+    <div class="stats-grid">
+      <div *ngFor="let stat of stats" class="stat-card glass">
+        <div class="stat-icon" [style.background-color]="stat.color">{{ stat.icon }}</div>
+        <div class="stat-info">
+          <span class="stat-label">{{ stat.label }}</span>
+          <span class="stat-value">{{ stat.value }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção de Convites Pendentes (Apenas para Professores com convites) -->
+    <section class="invites-section" *ngIf="pendingInvites.length > 0">
+      <div class="section-header">
+        <h2>🔔 Convites de Orientação</h2>
+      </div>
+      <div class="invites-grid">
+        <div *ngFor="let invite of pendingInvites" class="invite-card glass">
+          <div class="invite-info">
+            <span class="invite-student"><strong>{{ invite.studentName }}</strong> convidou você</span>
+            <span class="invite-project">Projeto: {{ invite.projectTitle }}</span>
+          </div>
+          <div class="invite-actions">
+            <button class="btn-action accept" (click)="respondToInvite(invite, 'accepted')">Aceitar</button>
+            <button class="btn-action decline" (click)="respondToInvite(invite, 'declined')">Ignorar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="projects-section">
+      <div class="section-header">
+        <h2>Seus Projetos Científicos</h2>
+        <span class="project-count">{{ recentProjects.length }} projetos</span>
+      </div>
+
+      <div *ngIf="error" class="error-msg glass">{{ error }}</div>
+
+      <!-- Estado de Carregamento -->
+      <div *ngIf="loading" class="loading-state glass">
+        <div class="spinner"></div>
+        <p>Carregando seus projetos...</p>
+      </div>
+
+      <div class="projects-grid" *ngIf="!loading">
+        <app-project-card
+          *ngFor="let project of recentProjects"
+          [title]="project.title"
+          [description]="project.description"
+          [subject]="project.subject"
+          [difficulty]="project.difficulty"
+          [date]="project.createdAt"
+          [tasksCount]="project.tasksCount || 0"
+          [completedTasksCount]="project.completedTasksCount || 0"
+          [materialsCount]="project.materialsCount || 0"
+          [obtainedMaterialsCount]="project.obtainedMaterialsCount || 0"
+          (open)="goToProject(project.id)">
+        </app-project-card>
+      </div>
+
+      <div *ngIf="recentProjects.length === 0 && !error && !loading" class="empty-state glass">
+        <div class="empty-icon">🧪</div>
+        <h3>Nenhum projeto ainda</h3>
+        <p>Comece sua jornada científica criando seu primeiro projeto guiado por IA.</p>
+        <button class="btn btn-primary" (click)="goToGenerator()">Criar Meu Primeiro Projeto</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile FAB -->
+  <button class="fab-mobile" (click)="goToGenerator()" title="Novo Projeto">
+    <span>➕</span>
+  </button>
+</div>

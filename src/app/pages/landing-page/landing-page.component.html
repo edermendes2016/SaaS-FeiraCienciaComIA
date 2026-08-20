@@ -1,0 +1,135 @@
+<div class="crt-overlay"></div>
+<div class="crt-scanlines"></div>
+<div class="landing-wrapper crt-screen">
+  <!-- Anti-Physics Background (Fixed) -->
+  <div class="physics-fixed-container">
+    <div *ngFor="let el of elements" [class]="'physics-el ' + el.type" [style.left.%]="el.left" [style.top.%]="el.top"
+      [style.color]="el.color" [style.zIndex]="el.id"
+      [style.transform]="'translate3d(' + el.offsetX + 'px, ' + (el.offsetY + (scrollY * el.speed)) + 'px, 0)'">
+      <div class="physics-idle-anim" [style.animation-delay]="el.delay + 's'"
+        [style.animation-duration]="el.duration + 's'">
+        <div *ngIf="el.type === 'shape'" class="physics-shape-blob" [style.width.px]="el.size"
+          [style.height.px]="el.size" [style.background-color]="el.color"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Navigation -->
+  <nav class="landing-nav" [class.scrolled]="isScrolled">
+    <a href="#" class="logo">
+      <span>🔬</span> Assistente de <span>Feira de Ciências</span>
+    </a>
+    <div class="nav-actions">
+      <a routerLink="/login" class="btn btn-secondary">Entrar</a>
+      <a routerLink="/register" class="btn btn-primary">Começar Grátis</a>
+    </div>
+  </nav>
+
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="badge animate-fade-in">🚀 O Futuro da Educação Científica</div>
+    <h1 class="gradient-text animate-fade-in-up">Crie projetos científicos incríveis com o poder da <span
+        class="text-glow">IA</span>.</h1>
+    <p class="animate-fade-in-up" style="animation-delay: 0.1s">
+      O assistente inteligente que transforma suas ideias em conquistas. Organizamos seu cronograma, geramos materiais e
+      aceleramos sua pesquisa de forma simples e intuitiva.
+    </p>
+    <div class="cta-group animate-fade-in-up" style="animation-delay: 0.2s">
+      <a routerLink="/register" class="btn btn-primary btn-lg">Começar Agora — É Grátis</a>
+      <a routerLink="/login" class="btn btn-secondary btn-lg">Acessar Painel</a>
+    </div>
+
+
+    <!-- AI Demo Preview -->
+    <div class="ai-preview-container animate-fade-in-up" style="animation-delay: 0.3s">
+      <div class="preview-window glass">
+        <div class="window-header">
+          <div class="dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="title">Assistente IA - Chat</div>
+        </div>
+        <div class="window-body">
+          <div class="message user">
+            <div class="avatar">👤</div>
+            <div class="bubble">
+              {{ displayPrompt }}<span class="cursor">|</span>
+            </div>
+          </div>
+          <div class="message ai" *ngIf="displayPrompt.length > 20">
+            <div class="avatar">🤖</div>
+            <div class="bubble shimmer">
+              <p>Com certeza! Vamos criar um projeto incrível sobre <strong>Vulcões</strong>. Vou gerar para você:</p>
+              <ul>
+                <li>✅ Plano de Pesquisa</li>
+                <li>✅ Cronograma de Experimentos</li>
+                <li>✅ Lista de Materiais Caseiros</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="section-header">
+      <h2 class="gradient-text">Tudo o que você precisa</h2>
+      <p>Do planejamento à apresentação final, estamos com você.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>Geração por IA</h3>
+        <p>Crie o plano de pesquisa, cronograma e lista de materiais em segundos com nossa IA especializada.</p>
+        <button class="btn btn-outline" routerLink="/register">Saiba Mais</button>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>Colaboração em Tempo Real</h3>
+        <p>Trabalhe com sua equipe e receba feedback direto do seu orientador no chat integrado.</p>
+        <button class="btn btn-outline" routerLink="/register">Ver Detalhes</button>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Gestão de Progresso</h3>
+        <p>Acompanhe cada etapa do seu projeto com feedbacks visuais e status de conclusão automatizados.</p>
+        <button class="btn btn-outline" routerLink="/register">Explorar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="cta-card">
+      <h2 class="gradient-text">Pronto para brilhar na feira?</h2>
+      <p>Junte-se a centenas de estudantes e professores que já estão usando a tecnologia a favor da ciência.</p>
+      <div class="cta-group" style="justify-content: center; margin-top: 2rem;">
+        <a routerLink="/register" class="btn btn-primary btn-lg">Começar Gratuitamente</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <a href="#" class="logo">
+      <span>🔬</span> Assistente de <span>Feira de Ciências</span>
+    </a>
+
+    <div class="copyright">
+      © 2026 Assistente de Feira de Ciências. Todos os direitos reservados.
+    </div>
+    <div class="social-links">
+      <!-- Opcional: links para redes sociais -->
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,267 @@
+<app-navbar />
+
+<div class="generator-page">
+
+  <!-- ── FORM SECTION ──────────────────────────────────── -->
+  <section class="form-section">
+    <div class="form-header animate-fade-in-up">
+      <span class="section-tag">🤖 Gerador com IA</span>
+      <h1>Criar <span class="gradient-text">Projeto Científico</span></h1>
+      <p>Descreva seu tema e deixe a IA montar tudo para você: checklist, tarefas, vídeos e material de estudo.</p>
+    </div>
+
+    <form class="generator-form glass animate-fade-in-up" (ngSubmit)="generate()">
+
+      <!-- Topic -->
+      <div class="field-full">
+        <label for="topic">💡 Tema do Projeto</label>
+        <input
+          id="topic"
+          type="text"
+          [(ngModel)]="topic"
+          name="topic"
+          placeholder="Ex: Vulcão de bicarbonato, Filtro de água, Germinação acelerada..."
+          required
+        />
+      </div>
+      
+      <!-- Subject -->
+      <div class="field-full">
+        <label>📚 Disciplina</label>
+        <div class="difficulty-pills">
+          @for (s of subjects; track s.name) {
+            <button
+              type="button"
+              class="pill"
+              [class.active]="subject === s.name"
+              [style.border-color]="subject === s.name ? s.color : ''"
+              [style.background-color]="subject === s.name ? s.color : ''"
+              [style.color]="subject === s.name ? 'white' : ''"
+              (click)="subject = s.name"
+            >{{ s.name }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <!-- Difficulty -->
+        <div class="field-group">
+          <label>⚡ Dificuldade</label>
+          <div class="difficulty-pills">
+            @for (d of difficulties; track d) {
+              <button
+                type="button"
+                class="pill"
+                [class.active]="difficulty === d"
+                (click)="difficulty = d"
+              >{{ d }}</button>
+            }
+          </div>
+        </div>
+
+        <!-- Team Size -->
+        <div class="field-group">
+          <label for="teamSize">👥 Pessoas no grupo: <strong>{{ teamSize }}</strong></label>
+          <div class="input-wrapper">
+            <input
+              id="teamSize"
+              type="range"
+              min="1"
+              max="6"
+              [(ngModel)]="teamSize"
+              name="teamSize"
+              class="range-input"
+            />
+          </div>
+          <div class="range-labels"><span>1</span><span>6</span></div>
+        </div>
+
+        <!-- Deadline -->
+        <div class="field-group">
+          <label for="deadline">📅 Data da feira</label>
+          <div class="input-wrapper">
+            <input
+              id="deadline"
+              type="date"
+              [(ngModel)]="deadline"
+              name="deadline"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button
+        id="btn-generate"
+        type="submit"
+        class="btn btn-primary btn-full"
+        [disabled]="isGenerating() || !topic || !subject"
+      >
+        @if (!isGenerating()) {
+          <span>✨ Gerar Projeto com IA</span>
+        } @else {
+          <span class="spinner"></span>
+          <span>Gerando...</span>
+        }
+      </button>
+
+    </form>
+  </section>
+
+  <!-- ── SEARCH GUARD ALERT ──────────────────────────────── -->
+  @if (isBlocked()) {
+    <div class="guard-alert animate-fade-in-up" role="alert">
+      <div class="guard-icon">🚫</div>
+      <div class="guard-body">
+        <h3>Busca fora do escopo</h3>
+        <p class="guard-reason">{{ blockedReason() }}</p>
+        <div class="guard-suggestion">
+          <span class="guard-suggestion-label">💡 Sugestão</span>
+          <p>{{ blockedSuggestion() }}</p>
+        </div>
+        <div class="guard-note">
+          Esta plataforma é dedicada exclusivamente a projetos de
+          <strong>feira de ciências para o Ensino Médio</strong>.
+          Por favor, reformule seu tema com conteúdo científico ou educacional.
+        </div>
+        <button id="btn-dismiss-block" class="btn btn-secondary btn-dismiss" (click)="dismissBlock()">
+          ← Reformular tema
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── GENERATION PROGRESS ──────────────────────────── -->
+  @if (isGenerating()) {
+    <section class="progress-section glass animate-fade-in-up">
+      <h3>🤖 Agentes IA trabalhando...</h3>
+      <div class="progress-steps">
+        @for (step of generationSteps; track step; let i = $index) {
+          <div class="progress-step" [class.active]="i === generationStep()" [class.done]="i < generationStep()">
+            <span class="step-dot"></span>
+            <span class="step-label">{{ step }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ── RESULT SECTION ────────────────────────────────── -->
+  @if (generated()) {
+    <section class="result-section animate-fade-in-up">
+
+      <!-- Result Header -->
+      <div class="result-header glass">
+        <div class="result-title-block">
+          <span class="result-badge">✅ Projeto Gerado</span>
+          <h2>{{ projectTitle }}</h2>
+          <p>{{ projectDescription }}</p>
+        </div>
+        <div class="result-meta">
+          <span class="meta-chip">{{ subject }}</span>
+          <span class="meta-chip">{{ difficulty }}</span>
+          <span class="meta-chip">👥 {{ teamSize }} pessoas</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-bar">
+        <button class="tab-btn" [class.active]="activeTab() === 'checklist'" (click)="setTab('checklist')" id="tab-checklist">
+          ✅ Checklist
+          <span class="tab-badge">{{ checklistItems.length }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="activeTab() === 'tasks'" (click)="setTab('tasks')" id="tab-tasks">
+          👥 Divisão de Tarefas
+        </button>
+        <button class="tab-btn" [class.active]="activeTab() === 'material'" (click)="setTab('material')" id="tab-material">
+          📚 Material de Estudo
+        </button>
+      </div>
+
+      <!-- ── TAB: CHECKLIST ── -->
+      @if (activeTab() === 'checklist') {
+        <div class="tab-content">
+          <!-- Progress -->
+          <div class="checklist-progress glass">
+            <div class="cp-info">
+              <span>Progresso total</span>
+              <strong>{{ checklistProgress }}%</strong>
+            </div>
+            <div class="cp-bar">
+              <div class="cp-fill" [style.width]="checklistProgress + '%'"></div>
+            </div>
+          </div>
+
+          <!-- Items by phase -->
+          @for (phase of checklistPhases; track phase) {
+            <div class="checklist-phase">
+              <h4 class="phase-title">{{ phase }}</h4>
+              <div class="checklist-items">
+                @for (item of itemsByPhase(phase); track item.id) {
+                  <label class="checklist-item glass" [class.checked]="item.done" (click)="toggleChecklistItem(item.id)">
+                    <div class="check-box" [class.checked]="item.done">
+                      @if (item.done) { <span>✓</span> }
+                    </div>
+                    <span class="check-label" [class.done]="item.done">{{ item.label }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ── TAB: TASKS ── -->
+      @if (activeTab() === 'tasks') {
+        <div class="tab-content tasks-grid">
+          @for (task of tasks; track task.role) {
+            <div class="task-card glass">
+              <div class="task-header" [style.border-color]="task.color">
+                <div class="task-icon" [style.background]="task.color + '22'">{{ task.icon }}</div>
+                <div>
+                  <h4>{{ task.role }}</h4>
+                  <span class="task-hours">⏱️ {{ task.hours }}</span>
+                </div>
+              </div>
+              <ul class="task-list">
+                @for (item of task.items; track item) {
+                  <li>
+                    <span class="task-bullet" [style.background]="task.color"></span>
+                    {{ item }}
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+
+
+      <!-- ── TAB: MATERIAL ── -->
+      @if (activeTab() === 'material') {
+        <div class="tab-content material-content glass">
+          @if (studyMaterial && studyMaterial.concept) {
+            <div class="study-details">
+              <div class="study-section">
+                <h4>🔬 Conceito</h4>
+                <p>{{ studyMaterial.concept }}</p>
+              </div>
+              <div class="study-section">
+                <h4>❓ Por que acontece?</h4>
+                <p>{{ studyMaterial.whyItHappens }}</p>
+              </div>
+              <div class="study-section">
+                <h4>🌍 Aplicação Real</h4>
+                <p>{{ studyMaterial.realWorldApplication }}</p>
+              </div>
+            </div>
+          } @else {
+            <pre class="material-text">{{ studyMaterial }}</pre>
+          }
+        </div>
+      }
+
+    </section>
+  }
+
+</div>

@@ -1,0 +1,18 @@
+/* src/styles.css */
+@import './app/design/tokens.css';
+@import './app/design/components.css';
+
+/* Global resets and base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}

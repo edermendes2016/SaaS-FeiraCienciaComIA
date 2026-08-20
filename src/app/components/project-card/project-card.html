@@ -1,0 +1,18 @@
+<div class="project-card glass">
+  <div class="card-header">
+    <div class="card-emoji" [style.background]="project.color + '22'">{{ project.emoji }}</div>
+    <span class="card-status" [class.done]="project.progress === 100">{{ project.status }}</span>
+  </div>
+
+  <h3 class="card-title">{{ project.title }}</h3>
+  <p class="card-subject">{{ project.subject }}</p>
+
+  <div class="progress-bar">
+    <div
+      class="progress-fill"
+      [style.width]="project.progress + '%'"
+      [style.background]="project.color"
+    ></div>
+  </div>
+  <span class="progress-label">{{ project.progress }}% concluído</span>
+</div>

@@ -1,0 +1,20 @@
+<header class="dashboard-header glass">
+  <div class="header-left" (click)="onHome()" style="cursor: pointer">
+    <h1 class="logo">Assistente de <span>Feira de Ciências</span></h1>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-icon" (click)="onToggleTheme()" title="Alternar Tema">
+      <span class="icon">{{ themeService.currentTheme === 'dark' ? '☀️' : '🌙' }}</span>
+    </button>
+    <button class="btn btn-primary" (click)='onNewProject()'>
+      <span class="icon">➕</span> <span class="btn-text">Novo Projeto</span>
+    </button>
+    <div class="user-avatar" title="Perfil">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Science" alt="User">
+    </div>
+    <button class="btn btn-secondary btn-logout" (click)="onLogout()" title="Sair">
+      <span class="icon">🚪</span> <span class="btn-text">Sair</span>
+    </button>
+  </div>
+</header>
+

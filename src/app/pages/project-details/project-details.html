@@ -1,0 +1,324 @@
+<div class="project-container" *ngIf="project$ | async as project">
+  <app-dashboard-header 
+    (newProject)="onNewProject()"
+    (home)="backToDashboard()">
+  </app-dashboard-header>
+
+  <main class="project-content">
+    <div class="project-main">
+      <!-- Cabeçalho do Projeto -->
+      <section class="info-section glass">
+        <div class="header-row">
+          <div class="header-main">
+            <button class="btn btn-secondary" (click)="backToDashboard()">← Voltar</button>
+            <span class="subject">{{ project.subject }}</span>
+          </div>
+          
+          <div class="header-actions" *ngIf="isOwner(project)">
+            <div class="team-counter" [class.full]="studentCount >= project.teamSize">
+              EQUIPE: {{ studentCount }}/{{ project.teamSize }}
+            </div>
+            <button class="btn btn-primary" (click)="showInviteModal = true">
+              <span>➕</span> Convidar
+            </button>
+            <button class="btn btn-danger" (click)="openDeleteProjectModal()" style="background-color: #ef4444; border-color: #ef4444; color: white;">
+              <span>🗑️</span> Excluir
+            </button>
+          </div>
+        </div>
+        <h1>{{ project.title }}</h1>
+        <p class="description">{{ project.description }}</p>
+
+        <!-- Modal de Confirmação de Exclusão de Projeto -->
+        <div class="modal-overlay" *ngIf="showDeleteProjectModal" (click)="cancelDeleteProject()">
+          <div class="modal-content glass" (click)="$event.stopPropagation()">
+            <div style="text-align: center; margin-bottom: 1rem;">
+              <span style="font-size: 3rem;">⚠️</span>
+            </div>
+            <h3 style="text-align: center; color: #ef4444;">Excluir Projeto Permanentemente?</h3>
+            <p style="text-align: center;">Esta ação apagará <strong>{{ project.title }}</strong> e todas as mensagens, tarefas e materiais vinculados. Ninguém mais poderá acessar. Você tem certeza?</p>
+            
+            <div class="modal-actions" style="margin-top: 2rem;">
+              <button class="btn btn-secondary" (click)="cancelDeleteProject()">Cancelar</button>
+              <button class="btn btn-danger" (click)="confirmDeleteProject()" style="background-color: #ef4444; border-color: #ef4444;">
+                Sim, Excluir Projeto
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal de Convite -->
+        <div class="modal-overlay" *ngIf="showInviteModal" (click)="showInviteModal = false">
+          <div class="modal-content glass" (click)="$event.stopPropagation()">
+            <h3>Convidar Membro</h3>
+            <p>Convide um colega para a equipe ou um professor para orientar.</p>
+            
+            <div class="role-selector">
+              <button 
+                type="button"
+                class="pill" 
+                [class.active]="inviteRole === 'student'" 
+                (click)="inviteRole = 'student'"
+              >Colega (Aluno)</button>
+              <button 
+                type="button"
+                class="pill" 
+                [class.active]="inviteRole === 'teacher'" 
+                (click)="inviteRole = 'teacher'"
+              >Orientador (Prof)</button>
+            </div>
+
+            <div class="form-group">
+              <input type="email" [(ngModel)]="inviteEmail" placeholder="email@exemplo.com" class="glass-input">
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-secondary" (click)="showInviteModal = false" [disabled]="isInviting">Cancelar</button>
+              <button class="btn btn-primary" (click)="sendInvite(project)" [disabled]="isInviting">
+                {{ isInviting ? 'Enviando...' : 'Enviar Convite' }}
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="label">Dificuldade</span>
+            <span class="value" [class]="project.difficulty">{{ project.difficulty }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="label">Equipe</span>
+            <span class="value">{{ project.teamSize }} pessoas</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stepper de Progresso -->
+      <app-progress-stepper [steps]="steps"></app-progress-stepper>
+
+      <!-- SEÇÃO 1: EXPLICAÇÃO (Sempre visível) -->
+      <section class="details-tabs glass">
+        <div class="section-header">
+          <h3>📘 Conceito Científico</h3>
+        </div>
+        <div class="tab-content" *ngIf="project.explanation">
+          <!-- ... (existing explanation content) ... -->
+          <ng-container *ngIf="project.explanation.concept; else simpleText">
+            <div class="concept-block">
+              <p class="concept-text">{{ project.explanation.concept }}</p>
+            </div>
+            
+            <div class="concept-grid">
+              <div class="concept-card">
+                <h4>🔬 Por que isso acontece?</h4>
+                <p>{{ project.explanation.whyItHappens }}</p>
+              </div>
+              <div class="concept-card">
+                <h4>🌍 Na vida real</h4>
+                <p>{{ project.explanation.realWorldApplication }}</p>
+              </div>
+            </div>
+
+            <div class="qna-section" *ngIf="project.explanation.presentationQnA">
+              <h4>🎤 Preparação para a Apresentação</h4>
+              <div class="qna-grid">
+                <div *ngFor="let qa of project.explanation.presentationQnA" class="qa-item glass">
+                  <p class="question"><strong>🤔 Pergunta:</strong> {{ qa.question }}</p>
+                  <p class="answer"><strong>💡 Resposta:</strong> {{ qa.answer }}</p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #simpleText>
+            <p>{{ project.explanation }}</p>
+          </ng-template>
+        </div>
+        <div class="tab-content" *ngIf="!project.explanation">
+          <div class="ai-empty-state">
+            <div class="ai-icon">📘</div>
+            <h3>Conceito científico não encontrado</h3>
+            <p>Parece que este projeto ainda não tem uma explicação detalhada. A IA pode gerar uma agora para você.</p>
+            <button class="btn btn-primary" (click)="generateConcept(project)" [disabled]="isGenerating">
+              {{ isGenerating ? 'Gerando...' : 'Gerar Conceito Científico ✨' }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEÇÃO 1.5: TAREFAS E MATERIAIS -->
+      <div class="concept-grid">
+        <section class="details-tabs glass">
+          <div class="section-header">
+            <h3>✅ Checklist de Tarefas</h3>
+          </div>
+          <div class="checklist-container">
+            <div *ngFor="let task of tasks$ | async" 
+                 class="item-row" 
+                 [class.completed]="task.completed"
+                 (click)="toggleTask(task)">
+              <div class="checkbox-wrapper">
+                <span class="check-icon" *ngIf="task.completed">✓</span>
+              </div>
+              <div class="item-info">
+                <span class="item-title">{{ task.title }}</span>
+                <span class="item-subtitle">{{ task.phase }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="details-tabs glass">
+          <div class="section-header">
+            <h3>📚 Materiais Necessários</h3>
+          </div>
+          <div class="materials-container">
+            <div *ngFor="let mat of materials$ | async" 
+                 class="item-row" 
+                 [class.obtained]="mat.obtained"
+                 (click)="toggleMaterial(mat)">
+              <div class="checkbox-wrapper">
+                <span class="check-icon" *ngIf="mat.obtained">✓</span>
+              </div>
+              <div class="item-info">
+                <span class="item-title">{{ mat.name }}</span>
+                <span class="item-subtitle">{{ mat.quantity }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- SEÇÃO 2: EXECUÇÃO (Expansão IA) -->
+      <section class="details-tabs glass" *ngIf="!project.executionProtocol">
+        <div class="ai-empty-state">
+          <div class="ai-icon">🧪</div>
+          <h3>Pronto para começar os experimentos?</h3>
+          <p>A IA pode gerar um protocolo passo-a-passo detalhado com instruções de segurança para você.</p>
+          <button class="btn btn-primary" (click)="generatePhaseDetails('execution', project)" [disabled]="isGenerating">
+            {{ isGenerating ? 'Gerando Protocolo...' : 'Gerar Guia de Execução ✨' }}
+          </button>
+        </div>
+      </section>
+
+      <section class="details-tabs glass" *ngIf="project.executionProtocol">
+        <div class="section-header">
+          <h3>🧪 Protocolo de Execução</h3>
+          <span class="badge">Gerado por IA</span>
+        </div>
+        <div class="protocol-grid">
+          <div *ngFor="let step of project.executionProtocol.steps; let i = index" class="protocol-step">
+            <div class="step-num">{{ i + 1 }}</div>
+            <div class="step-body">
+              <h4>{{ step.title }}</h4>
+              <p>{{ step.detail }}</p>
+              <div class="safety-alert" *ngIf="step.safety">
+                ⚠️ <strong>Segurança:</strong> {{ step.safety }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEÇÃO 3: RELATÓRIO (Expansão IA) -->
+      <section class="details-tabs glass" *ngIf="project.executionProtocol && !project.reportDraft">
+        <div class="ai-empty-state">
+          <div class="ai-icon">📊</div>
+          <h3>Hora de documentar os resultados!</h3>
+          <p>Transforme seus experimentos em um relatório científico estruturado automaticamente.</p>
+          <button class="btn btn-primary" (click)="generatePhaseDetails('report', project)" [disabled]="isGenerating">
+            {{ isGenerating ? 'Escrevendo Relatório...' : 'Gerar Rascunho do Relatório ✨' }}
+          </button>
+        </div>
+      </section>
+
+      <section class="details-tabs glass" *ngIf="project.reportDraft">
+        <div class="section-header">
+          <h3>📊 Rascunho do Relatório Científico</h3>
+          <span class="badge">Draft IA</span>
+        </div>
+        <div class="report-content">
+          <div class="report-section">
+            <h4>Introdução</h4>
+            <p>{{ project.reportDraft.introduction }}</p>
+          </div>
+          <div class="report-section">
+            <h4>Metodologia</h4>
+            <p>{{ project.reportDraft.methodology }}</p>
+          </div>
+          <div class="report-section">
+            <h4>Resultados Esperados</h4>
+            <p>{{ project.reportDraft.expectedResults }}</p>
+          </div>
+          <div class="report-section highlight">
+            <h4>💡 Conclusão (Template)</h4>
+            <p>{{ project.reportDraft.conclusionTemplate }}</p>
+          </div>
+        </div>
+      </section>
+      <!-- SEÇÃO 3: CHAT DE COLABORAÇÃO -->
+      <section class="chat-section glass" *ngIf="isMember(project)">
+        <div class="section-header">
+          <h3>💬 Chat do Projeto</h3>
+        </div>
+        
+        <div class="chat-container">
+          <div class="messages-list" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+            <div *ngFor="let msg of messages$ | async" 
+                 class="message-item" 
+                 [class.own-message]="msg.senderId === currentUser?.uid">
+              <div class="message-bubble">
+                <div class="msg-header">
+                  <span class="sender">
+                    {{ msg.senderName }} 
+                    <small style="opacity: 0.6; font-size: 0.7rem; font-weight: 400;">
+                      ({{ project.members[msg.senderId]?.role === 'teacher' ? 'Orientador' : 'Aluno' }})
+                    </small>
+                  </span>
+                  <button class="btn-delete" *ngIf="msg.senderId === currentUser?.uid || project.members[currentUser?.uid]?.role === 'teacher'" (click)="deleteMessage(msg.id)">🗑️</button>
+                </div>
+                <p>{{ msg.text }}</p>
+                <span class="time">{{ msg.createdAt?.toMillis() | date:'shortTime' }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="(messages$ | async)?.length === 0" class="chat-empty">
+              <p>Nenhuma mensagem ainda. Comece a conversa!</p>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <input type="text" 
+                   [(ngModel)]="newMessage" 
+                   (keyup.enter)="sendMessage()" 
+                   placeholder="Digite sua mensagem..." 
+                   class="glass-input">
+            <button class="btn btn-primary" (click)="sendMessage()">Enviar</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="project-sidebar">
+      <app-comments-section [projectId]="projectId"></app-comments-section>
+      
+      <div class="collaborators-card glass">
+        <h3>👥 Colaboradores</h3>
+        <div class="collab-list">
+          <div class="collab-item" *ngFor="let member of project.members | keyvalue">
+            <img [src]="'https://api.dicebear.com/7.x/avataaars/svg?seed=' + $any(member.key)" [alt]="member.value.name">
+            <div class="member-info">
+              <span class="member-name">{{ member.value.name }}</span>
+              <span class="member-role">{{ member.value.role === 'teacher' ? 'Orientador' : 'Aluno' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Mobile FAB (Invite) -->
+  <button class="fab-mobile" *ngIf="isOwner(project)" (click)="showInviteModal = true" title="Convidar">
+    <span>➕</span>
+  </button>
+</div>
+

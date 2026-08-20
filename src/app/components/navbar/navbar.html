@@ -1,0 +1,30 @@
+<nav class="navbar glass">
+  <a class="nav-brand" routerLink="/dashboard">
+    <span class="nav-logo">🔬</span>
+    <span class="nav-title gradient-text">
+      <span class="full-title">Assistente de Feira de Ciências</span>
+      <span class="short-title">Assistente IA</span>
+    </span>
+  </a>
+
+  <div class="nav-mobile-toggle" (click)="isMenuOpen = !isMenuOpen">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <ul class="nav-links" [class.open]="isMenuOpen">
+    <li><a routerLink="/dashboard" routerLinkActive="active" (click)="isMenuOpen = false">Dashboard</a></li>
+    <li><a routerLink="/gerar" routerLinkActive="active" (click)="isMenuOpen = false">Gerar</a></li>
+    <li><a routerLink="/dashboard" (click)="isMenuOpen = false">Projetos</a></li>
+  </ul>
+
+  <div class="nav-actions" *ngIf="user$ | async as user">
+    <div class="nav-avatar" [title]="user.email">{{ user.email?.charAt(0)?.toUpperCase() }}</div>
+    <button class="btn-logout" (click)="logout()" title="Sair">🚪</button>
+  </div>
+  <div class="nav-actions" *ngIf="!(user$ | async)">
+    <a routerLink="/login" class="btn btn-secondary">Entrar</a>
+  </div>
+</nav>
+

@@ -1,0 +1,262 @@
+/* src/app/design/components.css */
+
+/* ── Buttons ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  background: var(--color-primary-dark);
+  box-shadow: 0 8px 25px rgba(234, 88, 12, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-secondary {
+  background: var(--glass-bg);
+  color: var(--color-text);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: rgba(234, 88, 12, 0.05);
+  color: var(--color-primary);
+}
+
+.btn-google {
+  background: white;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-google:hover:not(:disabled) {
+  background: #f9fafb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .btn-google {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-lg {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* ── Dropdowns (Select) ─────────────────────────────────── */
+.input-wrapper select {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.select-wrapper::after {
+  content: '▼';
+  font-size: 0.7rem;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--color-text-muted);
+  transition: transform 0.3s ease;
+}
+
+.select-wrapper:focus-within::after {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--color-primary);
+}
+
+.input-wrapper select:focus {
+  border-color: var(--color-primary);
+  background: rgba(234, 88, 12, 0.08);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+/* Options styling (limited support in browsers, but helps) */
+.input-wrapper select option {
+  background: #1e293b;
+  color: white;
+  padding: 10px;
+}
+
+[data-theme='light'] .input-wrapper select option {
+  background: white;
+  color: #1e293b;
+}
+
+/* ── Inputs ─────────────────────────────────────────────── */
+.input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--color-primary);
+  background: rgba(234, 88, 12, 0.08);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+/* ── Form Groups ────────────────────────────────────────── */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.field-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes fadeInSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeInSlide 0.5s ease forwards;
+}
+
+/* ── Pills (Selection) ──────────────────────────────────── */
+.pill {
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  border: 1px solid var(--color-border);
+  background: var(--glass-bg);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.pill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(234, 88, 12, 0.05);
+  transform: translateY(-1px);
+}
+
+.pill.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+  transform: scale(1.05);
+}
+
+/* ── Floating Action Button (Mobile) ────────────────────── */
+.fab-mobile {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.4);
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab-mobile:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.6);
+}
+
+@media (max-width: 768px) {
+  .fab-mobile {
+    display: flex;
+  }
+}
+
