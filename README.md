@@ -1,59 +1,93 @@
-# FeiraCienciasIa
+# 🔬 Feira de Ciências com IA (SaaS)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+> Plataforma inteligente para ideação, estruturação, acompanhamento e orientação de projetos para feiras de ciências escolares e acadêmicas utilizando Inteligência Artificial.
 
-## Development server
+---
 
-To start a local development server, run:
+## 💡 Sobre o Projeto e Proposta
 
+O **Feira de Ciências com IA** é um SaaS educacional desenvolvido para transformar a forma como alunos e professores interagem no desenvolvimento de projetos científicos. 
+
+Muitas vezes, estudantes enfrentam bloqueios na hora de definir um tema, formular hipóteses ou estruturar o cronograma e a lista de materiais necessários. Ao mesmo tempo, os professores/orientadores precisam de ferramentas eficientes para acompanhar o progresso de múltiplos grupos e fornecer feedbacks em tempo real.
+
+A proposta deste projeto é unir a metodologia científica ao poder da **Inteligência Artificial Generativa (Google Gemini)**, proporcionando:
+- **Auxílio guiado na ideação:** geração de temas viáveis e adequados à faixa etária/nível escolar.
+- **Estruturação automática:** divisão em hipótese, metodologia, lista de materiais e tarefas passo a passo.
+- **Ambiente colaborativo em tempo real:** comunicação entre os membros do grupo e orientadores.
+
+---
+
+## ✨ Principais Funcionalidades
+
+- 🤖 **Gerador de Projetos com IA:** Criação assistida de propostas científicas completas (resumo, objetivos, hipótese e materiais) a partir de interesses ou temas livres.
+- 🎯 **Classificador de Intenções:** Processamento em linguagem natural para sugestão de materiais, adição de tarefas e refinamento metodológico.
+- 📋 **Gestão de Tarefas e Materiais:** Checklist interativo com indicador de progresso em tempo real e divisão por etapas do projeto.
+- 👥 **Colaboração e Gestão de Equipe:** Sistema de convites para estudantes e orientadores com papéis e permissões dedicadas.
+- 💬 **Comunicação Integrada:** Chat da equipe em tempo real e área exclusiva para feedbacks do orientador.
+- 🌗 **Interface Moderna:** Tema Claro/Escuro (Dark Mode), feedback visual com notificações toast e design responsivo com Tailwind CSS 4.0.
+- 🔒 **Segurança e Controle:** Autenticação via Firebase Auth, regras granulares de segurança no Firestore e fluxo de aprovação de usuários.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Frontend:** [Angular 21](https://angular.dev/) (Standalone Components, Signals, Reactive Forms)
+- **Estilização:** [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **Inteligência Artificial:** [Google Gemini API](https://ai.google.dev/)
+- **Backend as a Service:** [Firebase](https://firebase.google.com/) (Authentication, Cloud Firestore, Firebase Hosting)
+- **Testes Unitários:** [Vitest](https://vitest.dev/)
+
+---
+
+## 🚀 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) (versão 20 ou superior)
+- [npm](https://www.npmjs.com/)
+- Um projeto configurado no [Firebase Console](https://console.firebase.google.com/)
+
+### 1. Clonar o Repositório
 ```bash
-ng serve
+git clone https://github.com/edermendes2016/SaaS-FeiraCienciaComIA.git
+cd SaaS-FeiraCienciaComIA
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### 2. Instalar as Dependências
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+### 3. Configurar as Variáveis de Ambiente
+Copie o arquivo de exemplo [.env.example](.env.example) para `.env`:
 ```bash
-ng generate --help
+cp .env.example .env
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
+Preencha as variáveis no `.env` com as credenciais do seu projeto Firebase:
+```env
+FIREBASE_API_KEY=sua_api_key_aqui
+FIREBASE_AUTH_DOMAIN=seu-projeto.firebaseapp.com
+FIREBASE_PROJECT_ID=seu-project-id
+FIREBASE_STORAGE_BUCKET=seu-storage-bucket.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=seu_messaging_sender_id
+FIREBASE_APP_ID=seu_app_id
+FIREBASE_MEASUREMENT_ID=seu_measurement_id
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
+### 4. Executar em Desenvolvimento
 ```bash
-ng test
+npm start
 ```
+O script irá configurar os arquivos de ambiente automaticamente e iniciar o servidor na porta `http://localhost:4200/`.
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### 5. Build para Produção
 ```bash
-ng e2e
+npm run build
 ```
+Os arquivos otimizados serão gerados no diretório `dist/`.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 📄 Licença
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
